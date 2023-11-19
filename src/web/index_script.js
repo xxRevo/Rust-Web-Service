@@ -2,6 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminal = document.getElementById('terminal');
     const userInput = document.getElementById('user-input');
     const prompt = document.getElementById('prompt');
+    const printTextQueue = [];
+    let isPrintTextBusy = false;
+    let terminalAvailable = false;
+
+    function processPrintTextQueue() {
+        if (printTextQueue.length > 0 && !isPrintTextBusy) {
+            isPrintTextBusy = true;
+            const textToPrint = printTextQueue.shift();
+            printText(textToPrint);
+        }
+    }
 
     function printText(text) {
         // Split the text into an array of characters
@@ -21,7 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     printNextCharacter(index + 1);
                 }, delay);
             } else {
-                enableUserInput();
+                if(!terminalAvailable) {
+                    enableUserInput();
+                }
+                isPrintTextBusy = false;
+                processPrintTextQueue();
             }
 
         }
@@ -37,9 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleUserInput() {
         const input = userInput.value.trim();
         if (input !== '') {
-            printText(`\n${input}\n`);
-            // Add logic to handle user input (execute commands, etc.)
-            // For now, let's just clear the input
+            printTextQueue.push(`\n> ${input}\n`);
+            if (input == 'help') {
+                printTextQueue.push('balls');
+            }
+
+
+            if (!isPrintTextBusy) {
+                processPrintTextQueue();
+            }
             userInput.value = '';
             userInput.focus();
         }
@@ -55,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the cursor every 500 milliseconds to create a flashing effect
 
     // Example usage:
-    printText('[ XENIA NETWORK TERMINAL ]\n> Authorized Personnel Only - Decrypting Cipher...\n>...\n>...\n> Decryption Complete. Terminal Access Granted.');
-
+    printText('[ XENIA NETWORK TERMINAL ]\n> Authorized Personnel Only - Decrypting Cipher...\n>...\n>...\n> Decryption Complete. Terminal Access Granted.\n> Type \'help\' to display available commands.\n\n\n');
+    
     function enableUserInput() {
         // Show the prompt and user input after printing is complete
         prompt.style.visibility = 'visible';
