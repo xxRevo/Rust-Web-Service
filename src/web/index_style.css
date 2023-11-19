@@ -1,0 +1,43 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: black;
+    color: lime;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#terminal {
+    white-space: pre-wrap;
+    padding: 10px;
+}
+
+#input-container {
+    display: flex;
+    padding: 10px;
+}
+
+#prompt {
+    color: lime;
+    visibility: hidden;
+}
+
+#user-input {
+    border: none;
+    background-color: black;
+    color: lime;
+    font-family: 'Courier New', Courier, monospace;
+    outline: none;
+    flex: 1;
+    visibility: hidden;
+}
+
+#prompt.blink {
+    animation: blink-animation 1s steps(1, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
