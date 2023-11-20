@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 if(!terminalAvailable) {
                     enableUserInput();
+                    terminalAvailable = true;
                 }
                 isPrintTextBusy = false;
                 processPrintTextQueue();
@@ -53,10 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = userInput.value.trim();
         if (input !== '') {
             printTextQueue.push(`\n> ${input}\n`);
-            if (input == 'help') {
-                printTextQueue.push('balls');
-            }
-
+            fetch(`http://localhost:8000/guest_entry/${input}`)
+                .then(response => response.json())
+                .then(data => {
+                        const jsonString = JSON.stringify(data, null, 2);
+                    printTextQueue.push(jsonString);
+                })
+                .catch(error => console.error('Error:', error));
+            
 
             if (!isPrintTextBusy) {
                 processPrintTextQueue();
@@ -72,12 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
             handleUserInput();
         }
     });
-
-    // Update the cursor every 500 milliseconds to create a flashing effect
-
-    // Example usage:
     printText('[ XENIA NETWORK TERMINAL ]\n> Authorized Personnel Only - Decrypting Cipher...\n>...\n>...\n> Decryption Complete. Terminal Access Granted.\n> Type \'help\' to display available commands.\n\n\n');
-    
+    console.log("This Web service is running on a remote machine with VERY limited RAM and storage, please do not try to brute-force entries or I'll plant an IED under your house, thanks :) -Revo")
     function enableUserInput() {
         // Show the prompt and user input after printing is complete
         prompt.style.visibility = 'visible';
